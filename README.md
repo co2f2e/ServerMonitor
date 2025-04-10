@@ -1,7 +1,7 @@
 ## NGINX配置
 ```bahs
     location /monitor/ {
-        alias /usr/local/server_monitor/templates/;
+        alias /usr/local/ServerMonitor/templates/;
         index index.html;
         try_files $uri $uri/ /monitor/index.html;    
     }
