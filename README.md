@@ -13,3 +13,7 @@
        proxy_set_header X-Forwarded-Proto $scheme;
     }
 ```
+## 安装
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/install_servermonitor.sh)
+```
