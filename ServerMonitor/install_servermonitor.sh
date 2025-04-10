@@ -35,7 +35,7 @@ fi
 
 cd /usr/local
 if [ ! -d "ServerMonitor" ]; then
-    git clone https://github.com/co2f2e/ServerMonitor.git
+    git clone https://github.com/co2f2e/ServerMonitor.git .
 else
     red "ServerMonitor 仓库已存在，脚本终止。"
     exit 0
