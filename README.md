@@ -39,7 +39,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/unin
 | 开机自启动   | ```sudo systemctl enable servermonitor```                     |
 | 关闭开机启动 | ```sudo systemctl disable servermonitor```                    |
 ## 访问
-`httsp://域名/monitor/`
+`https://域名/monitor/`
 ## 测试环境
 * Debian12
 * NGINX
