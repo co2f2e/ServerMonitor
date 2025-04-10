@@ -17,3 +17,7 @@
 ```bash
 bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/install_servermonitor.sh)
 ```
+## 卸载
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/uninstall_servermonitor.sh)
+```
