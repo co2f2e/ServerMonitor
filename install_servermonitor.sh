@@ -36,10 +36,6 @@ fi
 cd /usr/local
 if [ ! -d "ServerMonitor" ]; then
     git clone https://github.com/co2f2e/ServerMonitor.git
-    cd /usr/local/ServerMonitor/ServerMonitor
-    mv * /usr/local/ServerMonitor/
-    cd /usr/local/ServerMonitor
-    rmdir ServerMonitor
 else
     red "ServerMonitor 仓库已存在，脚本终止。"
     exit 0
