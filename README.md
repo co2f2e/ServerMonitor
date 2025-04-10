@@ -1,3 +1,10 @@
+<h1 align="center">
+  ServerMonitor
+</h1>
+ServerMonitor 是一个简单的 Web 服务，用于监控服务器状态。
+
+<hr>
+
 ## NGINX配置
 ```bahs
     location /monitor/ {
@@ -31,3 +38,9 @@ bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/unin
 | 查看日志     | ```sudo journalctl -u servermonitor -f```                     |
 | 开机自启动   | ```sudo systemctl enable servermonitor```                     |
 | 关闭开机启动 | ```sudo systemctl disable servermonitor```                    |
+## 访问
+`httsp://域名/monitor/`
+## 测试环境
+* Debian12
+* NGINX
+* SSL
