@@ -1,16 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebSocket 服务器状态监控</title>
+    <title>服务器状态监控</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; margin: 0; padding: 20px; }
-        h1 { color: #4CAF50; text-align: center; }
-        .status { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 80%; max-width: 600px; text-align: left; }
-        .status p { margin: 8px 0; font-size: 16px; }
-        .status p strong { color: #4CAF50; }
-        .status p span { color: #4CAF50; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f5f5f5; 
+            color: #333; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        h1 { 
+            color: #4CAF50; 
+            text-align: center;
+        }
+        .status { 
+            background: #fff; 
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+        .status p { 
+            margin: 8px 0; 
+            font-size: 16px;
+        }
+        .status p strong {
+            color: #4CAF50;
+        }
+        .status p span {
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -20,19 +49,48 @@
     </div>
 
     <script>
-        const socket = new WebSocket('ws://localhost:8000/ws/status');
+        // 根据当前协议，选择 ws:// 或 wss://
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        // 使用当前域名和端口构建 WebSocket URL
+        const host = window.location.host;
+        const socketUrl = `${protocol}//${host}/ws/status`;
+
+        // 建立 WebSocket 连接
+        const socket = new WebSocket(socketUrl);
+        console.log("WebSocket URL:", socketUrl);
+
+        // 连接建立后打印日志
+        socket.onopen = () => {
+            console.log("WebSocket 连接已建立");
+        };
+
+        // 接收服务器推送的数据
         socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            document.getElementById('status').innerHTML = `
-                <p><strong>时间：</strong> ${data.time}</p>
-                <p><strong>主机名：</strong> ${data.hostname}</p>
-                <p><strong>系统：</strong> ${data.system} ${data.release}</p>
-                <p><strong>CPU 使用率：</strong> ${data.cpu_percent}%</p>
-                <p><strong>内存：</strong> ${data.memory.used} GB / ${data.memory.total} GB (${data.memory.percent}%)</p>
-                <p><strong>磁盘：</strong> ${data.disk.used} GB / ${data.disk.total} GB (${data.disk.percent}%)</p>
-                <p><strong>网络发送：</strong> ${data.net.bytes_sent} MB</p>
-                <p><strong>网络接收：</strong> ${data.net.bytes_recv} MB</p>
-            `;
+            try {
+                const data = JSON.parse(event.data);
+                document.getElementById('status').innerHTML = `
+                    <p><strong>时间：</strong> <span>${data.time}</span></p>
+                    <p><strong>主机名：</strong> <span>${data.hostname}</span></p>
+                    <p><strong>系统：</strong> <span>${data.system} ${data.release}</span></p>
+                    <p><strong>CPU 使用率：</strong> <span>${data.cpu_percent}%</span></p>
+                    <p><strong>内存使用：</strong> <span>${data.memory.used}GB / ${data.memory.total}GB (${data.memory.percent}%)</span></p>
+                    <p><strong>磁盘使用：</strong> <span>${data.disk.used}GB / ${data.disk.total}GB (${data.disk.percent}%)</span></p>
+                    <p><strong>网络发送 (每5秒)：</strong> <span>${data.net.bytes_sent}MB</span></p>
+                    <p><strong>网络接收 (每5秒)：</strong> <span>${data.net.bytes_recv}MB</span></p>
+                `;
+            } catch (error) {
+                console.error("数据解析错误：", error);
+            }
+        };
+
+        // 错误处理
+        socket.onerror = function(error) {
+            console.error("WebSocket 错误：", error);
+        };
+
+        // 连接关闭时打印日志
+        socket.onclose = function() {
+            console.log("WebSocket 连接已关闭");
         };
     </script>
 </body>
