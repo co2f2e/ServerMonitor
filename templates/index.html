@@ -75,8 +75,8 @@
                     <p><strong>CPU 使用率：</strong> <span>${data.cpu_percent}%</span></p>
                     <p><strong>内存使用：</strong> <span>${data.memory.used}GB / ${data.memory.total}GB (${data.memory.percent}%)</span></p>
                     <p><strong>磁盘使用：</strong> <span>${data.disk.used}GB / ${data.disk.total}GB (${data.disk.percent}%)</span></p>
-                    <p><strong>网络发送 (每5秒)：</strong> <span>${data.net.bytes_sent}MB</span></p>
-                    <p><strong>网络接收 (每5秒)：</strong> <span>${data.net.bytes_recv}MB</span></p>
+                    <p><strong>网络发送 (每秒)：</strong> <span>${(data.bytes_sent_per_sec / (1024 * 1024)).toFixed(2)}MB</span></p>
+                    <p><strong>网络接收 (每秒)：</strong> <span>${(data.bytes_recv_per_sec / (1024 * 1024)).toFixed(2)}MB</span></p>
                 `;
             } catch (error) {
                 console.error("数据解析错误：", error);
