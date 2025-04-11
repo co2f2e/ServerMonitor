@@ -10,7 +10,8 @@ app = FastAPI()
 
 @app.websocket("/ws/status")
 async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()  # 接受 WebSocket 连接
+    await websocket.accept()
+    print("connection open")
 
     # 初始化上一次的网络数据
     net_io = psutil.net_io_counters()
@@ -35,36 +36,20 @@ async def websocket_endpoint(websocket: WebSocket):
                 "hostname": socket.gethostname(),
                 "system": platform.system(),
                 "release": platform.release(),
-                "cpu_percent": psutil.cpu_percent(interval=None),  # interval=None 更实时
-                "memory": {
-                    "total": round(psutil.virtual_memory().total / (1024 ** 3), 2),
-                    "used": round(psutil.virtual_memory().used / (1024 ** 3), 2),
-                    "percent": psutil.virtual_memory().percent,
-                },
-                "disk": {
-                    "total": round(psutil.disk_usage('/').total / (1024 ** 3), 2),
-                    "used": round(psutil.disk_usage('/').used / (1024 ** 3), 2),
-                    "percent": psutil.disk_usage('/').percent,
-                },
-                "net": {
-                    "bytes_sent_per_sec": round(bytes_sent_per_sec / 1024, 2),  # 单位 KB/s
-                    "bytes_recv_per_sec": round(bytes_recv_per_sec / 1024, 2),  # 单位 KB/s
-                }
+                "cpu_percent": psutil.cpu_percent(interval=None),
+                "memory": psutil.virtual_memory()._asdict(),
+                "disk": psutil.disk_usage('/')._asdict(),
+                "bytes_sent_per_sec": bytes_sent_per_sec,
+                "bytes_recv_per_sec": bytes_recv_per_sec,
             }
-            
-            # 确保连接仍然打开时才发送消息
-            if websocket.client_state == WebSocket.CONNECTED:
-                await websocket.send_json(status)
+
+            await websocket.send_json(status) 
 
     except Exception as e:
-        print(f"WebSocket 断开：{e}")
+        print(f"connection closed: {e}")
     finally:
-        try:
-            # 在关闭前确保连接是打开的
-            if websocket.client_state == WebSocket.CONNECTED:
-                await websocket.close()
-        except Exception as e:
-            print(f"关闭 WebSocket 连接失败: {e}")
-            
+        await websocket.close()
+        print("connection closed")
+
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
