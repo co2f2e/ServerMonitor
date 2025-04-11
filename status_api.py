@@ -38,5 +38,7 @@ async def websocket_endpoint(websocket: WebSocket):
         await asyncio.sleep(5)  # 每5秒更新一次
     excetp Exception as e:
         print(f"WebSocket 断开: {e}")
+    finally:
+        await websocket.close()
 if __name__ == "__main__":
     uvicorn.run("status_api:app", host="127.0.0.1", port=8000, reload=True)
