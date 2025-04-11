@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import psutil
 import datetime
 import platform
@@ -43,7 +43,11 @@ async def websocket_endpoint(websocket: WebSocket):
                 "bytes_recv_per_sec": bytes_recv_per_sec,
             }
 
-            await websocket.send_json(status) 
+            try:
+                await websocket.send_json(status) 
+            except WebSocketDisconnect:
+                print("WebSocket disconnected")
+                break  
 
     except Exception as e:
         print(f"connection closed: {e}")
