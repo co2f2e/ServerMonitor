@@ -5,6 +5,14 @@ ServerMonitor 是一个简单的 Web 服务，用于监控服务器状态。
 
 <hr>
 
+## 安装
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/install_servermonitor.sh)
+```
+## 卸载
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/uninstall_servermonitor.sh)
+```
 ## NGINX配置
 ```bash
     location /monitor/ {
@@ -19,14 +27,6 @@ ServerMonitor 是一个简单的 Web 服务，用于监控服务器状态。
         proxy_set_header Connection "upgrade";  
         proxy_set_header Host $host;
     }
-```
-## 安装
-```bash
-bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/install_servermonitor.sh)
-```
-## 卸载
-```bash
-bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/ServerMonitor/main/uninstall_servermonitor.sh)
 ```
 ### 服务管理命令
 | 操作         | 命令                                                        |
