@@ -23,7 +23,7 @@ blue() {
 	echo -e "${blue}$1${nc}"
 }
 
-FILE_PATH="/usr/local/ServerMonitor/status_api.py"
+FILE_PATH="/usr/local/ServerMonitor/main.py"
 VENV_DIR="/usr/local/ServerMonitor/venv"
 SERVICE_NAME="servermonitor"
 
@@ -68,7 +68,7 @@ export TERM=xterm
 PROJECT_DIR="/usr/local/ServerMonitor"
 VENV_DIR="$PROJECT_DIR/venv"
 source "$VENV_DIR/bin/activate"
-python "$PROJECT_DIR/status_api.py"
+python "$PROJECT_DIR/main.py"
 EOF
 
 chmod +x start.sh 
