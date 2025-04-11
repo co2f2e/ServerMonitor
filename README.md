@@ -7,6 +7,9 @@ ServerMonitor 是一个简单的 Web 服务，用于监控服务器状态。
 
 ## NGINX配置
 ```bahs
+    location = /monitor {
+    	   rewrite ^/monitor$ /monitor/ permanent;
+    }
     location /monitor/ {
         alias /usr/local/ServerMonitor/templates/;
         index index.html;
