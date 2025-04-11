@@ -51,13 +51,20 @@ async def websocket_endpoint(websocket: WebSocket):
                     "bytes_recv_per_sec": round(bytes_recv_per_sec / 1024, 2),  # 单位 KB/s
                 }
             }
-
-            await websocket.send_json(status)
+            
+            # 确保连接仍然打开时才发送消息
+            if websocket.client_state == WebSocket.CONNECTED:
+                await websocket.send_json(status)
 
     except Exception as e:
         print(f"WebSocket 断开：{e}")
     finally:
-        await websocket.close()
-
+        try:
+            # 在关闭前确保连接是打开的
+            if websocket.client_state == WebSocket.CONNECTED:
+                await websocket.close()
+        except Exception as e:
+            print(f"关闭 WebSocket 连接失败: {e}")
+            
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
