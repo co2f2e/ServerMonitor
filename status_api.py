@@ -36,7 +36,7 @@ async def websocket_endpoint(websocket: WebSocket):
         }
         await websocket.send_json(status)  # 向客户端发送状态数据
         await asyncio.sleep(5)  # 每5秒更新一次
-    excetp Exception as e:
+    except Exception as e:
         print(f"WebSocket 断开: {e}")
     finally:
         await websocket.close()
