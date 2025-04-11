@@ -50,7 +50,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 print("Status sent")
             except WebSocketDisconnect:
                 print("WebSocket disconnected")
-                break  # 退出循环
+                break  
 
     except Exception as e:
         print(f"Connection closed due to exception: {e}")
