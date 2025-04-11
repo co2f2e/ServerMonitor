@@ -6,21 +6,18 @@ ServerMonitor 是一个简单的 Web 服务，用于监控服务器状态。
 <hr>
 
 ## NGINX配置
-```bahs
-    location = /monitor {
-    	   rewrite ^/monitor$ /monitor/ permanent;
-    }
+```bash
     location /monitor/ {
         alias /usr/local/ServerMonitor/templates/;
         index index.html;
-        try_files $uri $uri/ /monitor/index.html;    
+        try_files $uri $uri/ /monitor/index.html;
     }
-    location /monitor/api/ {
-       proxy_pass http://127.0.0.1:8000/api/;
-       proxy_set_header Host $host;
-       proxy_set_header X-Real-IP $remote_addr;
-       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-       proxy_set_header X-Forwarded-Proto $scheme;
+    location /ws/ {
+        proxy_pass http://127.0.0.1:8000/ws/;  # 直接把请求转发到你的 FastAPI 服务器
+        proxy_http_version 1.1;  # WebSocket 
+        proxy_set_header Upgrade $http_upgrade;  
+        proxy_set_header Connection "upgrade";  
+        proxy_set_header Host $host;
     }
 ```
 ## 安装
