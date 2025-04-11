@@ -22,6 +22,11 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             await asyncio.sleep(1)  # 每秒采集一次
 
+            # 检查连接状态，若已断开则跳出循环
+            if websocket.client_state != WebSocketState.CONNECTED:
+                print("WebSocket is disconnected, stopping data transmission.")
+                break
+
             net_io = psutil.net_io_counters()
             bytes_sent_per_sec = net_io.bytes_sent - last_bytes_sent
             bytes_recv_per_sec = net_io.bytes_recv - last_bytes_recv
@@ -47,7 +52,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_json(status) 
             except WebSocketDisconnect:
                 print("WebSocket disconnected")
-                break  
+                break  # 退出循环
 
     except Exception as e:
         print(f"connection closed: {e}")
