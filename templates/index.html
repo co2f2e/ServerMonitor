@@ -2,75 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>服务器状态监控</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket 服务器状态监控</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            background: #f5f5f5; 
-            color: #333; 
-            margin: 0; 
-            padding: 20px; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-        h1 { 
-            color: #4CAF50; 
-            text-align: center;
-        }
-        .status { 
-            background: #fff; 
-            padding: 20px; 
-            border-radius: 8px; 
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 80%;
-            max-width: 600px;
-            text-align: left;
-        }
-        .status p { 
-            margin: 8px 0; 
-            font-size: 16px;
-        }
-        .status p strong {
-            color: #4CAF50; /* 使字段名称变成绿色 */
-        }
-        .status p span {
-            color: #4CAF50; /* 使状态信息也变成绿色 */
-        }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; margin: 0; padding: 20px; }
+        h1 { color: #4CAF50; text-align: center; }
+        .status { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 80%; max-width: 600px; text-align: left; }
+        .status p { margin: 8px 0; font-size: 16px; }
+        .status p strong { color: #4CAF50; }
+        .status p span { color: #4CAF50; }
     </style>
 </head>
 <body>
     <h1>服务器状态监控</h1>
     <div class="status" id="status">
-        <p>加载中...</p>
+        <p>等待服务器数据...</p>
     </div>
 
     <script>
-        async function fetchStatus() {
-            try {
-                const response = await fetch('/monitor/api/status');
-                const data = await response.json();
-
-                document.getElementById('status').innerHTML = `
-                    <p><strong>时间：</strong> <span>${data.time}</span></p>
-                    <p><strong>主机名：</strong> <span>${data.hostname}</span></p>
-                    <p><strong>系统：</strong> <span>${data.system} ${data.release}</span></p>
-                    <p><strong>CPU 使用率：</strong> <span>${data.cpu_percent}%</span></p>
-                    <p><strong>内存：</strong> <span>${data.memory.used} GB / ${data.memory.total} GB (${data.memory.percent}%)</span></p>
-                    <p><strong>磁盘：</strong> <span>${data.disk.used} GB / ${data.disk.total} GB (${data.disk.percent}%)</span></p>
-                    <p><strong>网络发送：</strong> <span>${data.net.bytes_sent} MB</span></p>
-                    <p><strong>网络接收：</strong> <span>${data.net.bytes_recv} MB</span></p>
-                `;
-            } catch (error) {
-                document.getElementById('status').innerHTML = '<p>无法获取服务器状态。</p>';
-            }
-        }
-
-        fetchStatus();
-        setInterval(fetchStatus, 5000); // 每 5 秒刷新一次
+        const socket = new WebSocket('ws://localhost:8000/ws/status');
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            document.getElementById('status').innerHTML = `
+                <p><strong>时间：</strong> ${data.time}</p>
+                <p><strong>主机名：</strong> ${data.hostname}</p>
+                <p><strong>系统：</strong> ${data.system} ${data.release}</p>
+                <p><strong>CPU 使用率：</strong> ${data.cpu_percent}%</p>
+                <p><strong>内存：</strong> ${data.memory.used} GB / ${data.memory.total} GB (${data.memory.percent}%)</p>
+                <p><strong>磁盘：</strong> ${data.disk.used} GB / ${data.disk.total} GB (${data.disk.percent}%)</p>
+                <p><strong>网络发送：</strong> ${data.net.bytes_sent} MB</p>
+                <p><strong>网络接收：</strong> ${data.net.bytes_recv} MB</p>
+            `;
+        };
     </script>
 </body>
 </html>
